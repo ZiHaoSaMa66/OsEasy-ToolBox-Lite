@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+
+
+<html>
+<head>
+	<meta charset="utf-8">
+	<link rel="icon" href="../templates/favicon.ico" type="image/x-icon" />
+<script src="../static/func.js"></script>
+<link rel="stylesheet" href="../static/bruh.css" />
+<title>OsEasyToolBox-Lite</title>
+<style>
+
+
+	#dhl_0 {
+		float: left;
+		line-height: 60px;
+		text-align: center;
+		width: 100px;
+		height: 60px;
+		background-color: aquamarine;
+		
+		cursor: default;
+		
+	}
+
+	#github_page {
+
+		background-color: rgb(245, 132, 40);
+	}
+
+	#github_page:hover {
+
+	background-color: rgb(204, 109, 31);
+	}
+
+</style>
+
+
+
+</head>
+<body>
+
+<div id="dhl">
+	<div id="dhl_0">
+		<!-- 将自己传递进函数 -->
+	<p>关于</p>
+	
+	</div>
+
+	<div id="dhl_1" onmouseover="dhl_on_jiaodian(this)" onmouseleave="dhl_on_likai(this)" onclick="dhl_jump_page('Progress')">
+		<!-- 将自己传递进函数 -->
+	<p>进程管理</p>
+	
+	</div>
+	<div id="dhl_2" onmouseover="dhl_on_jiaodian(this)" onmouseleave="dhl_on_likai(this)" onclick="dhl_jump_page('other')">
+		
+	<p>其他管理</p>
+	
+	</div>
+	<div id="dhl_3" onmouseover="dhl_on_jiaodian(this)" onmouseleave="dhl_on_likai(this)" onclick="dhl_jump_page('guangbo')">
+		
+	<p>广播管理</p>
+	
+	</div>
+</div>
+
+<div id="main">
+
+<p>点击选项卡以开始使用!</p>
+<p>出现排版异常可以试着刷新页面！</p>
+<br />
+
+<p>由笨比ZiHao独自一人开发</p>
+<!-- <p>应该不会有人倒卖工具箱吧...</p> -->
+<!-- <p>请不要使用如IE等过旧的浏览器</p> -->
+<!-- <p>过旧的兼容性开发 臣妾做不到啊（扶额</p> -->
+<p>愿我们的电脑课都不再无聊~</p>
+
+<br />
+
+
+<h2 style="margin-left: 10px;">当前轻量版工具箱版本 </h2>
+
+<h2 style="margin-left: 10px;">{{ GUI_ver }}</h2>
+
+
+
+<input type="button" class="btn_funcs" id="github_page" value="打开工具箱Github页" onclick="doget_use_normal('github')">
+
+
+</div>
+
+
+
+
+
+</body>
+
+
+
+</html>

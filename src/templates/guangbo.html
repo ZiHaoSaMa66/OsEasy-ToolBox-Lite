@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<script src="../static/func.js"></script>
+		<link rel="stylesheet" href="../static/bruh.css" />
+		<link rel="icon" href="../templates/favicon.ico" type="image/x-icon" />
+		<title>OsEasyToolBox-Lite</title>
+		
+		<style>
+			
+			#dhl_3 {
+				
+				background-color: aquamarine;
+				cursor: default;
+				
+			}
+			
+            /* #guangbo_fdbmsg {
+                margin-left: 5px;
+                margin-top: 10px;
+
+            } */
+
+		</style>
+		
+		
+	</head>
+	<body>
+
+<div id="dhl">
+	<div id="dhl_0" onmouseover="dhl_on_jiaodian(this)" onmouseleave="dhl_on_likai(this)" onclick="dhl_jump_page('ToolBox')">
+		
+	<p>关于</p>
+	
+	</div>
+
+	<div id="dhl_1" onmouseover="dhl_on_jiaodian(this)" onmouseleave="dhl_on_likai(this)" onclick="dhl_jump_page('Progress')">
+		<!-- 将自己传递进函数 -->
+	<p>进程管理</p>
+	
+	</div>
+	<div id="dhl_2" onmouseover="dhl_on_jiaodian(this)" onmouseleave="dhl_on_likai(this)" onclick="dhl_jump_page('other')">
+		
+	<p>其他管理</p>
+	
+	</div>
+	<div id="dhl_3">
+		
+	<p>广播管理</p>
+	
+	</div>
+</div>
+
+<div id="main">
+
+
+    <input type="button" class="purbtn_funcs" value="显示/隐藏 使用说明" onclick="show_hid_how_use()">
+    
+    <div id="how2_use"></div>
+
+    <p>命令拦截状态 >> {{alreadyget_cmd}}</p>
+
+    <input type="button" class="btn_funcs" value="替换拦截命令程序" onclick="doget_use_normal('func/replaceSCR')">
+    <br>
+    <input type="button" class="btn_funcs" value="运行窗口化广播命令" onclick="doget_use_normal('func/RunWincmd')">
+    <br>
+    <input type="button" class="btn_funcs" value="运行全屏广播命令" onclick="doget_use_normal('func/RunFullWincmd')">
+    <br>
+    <input type="button" class="btn_funcs" value="手动杀屏幕广播进程" onclick="doget_use_normal('func/killscr')">
+    <br>
+    <input type="button" class="btn_funcs" value="还原原有屏幕广播程序" onclick="doget_use_normal('func/restoneSCR')">
+    <br>
+    <p>此快捷键激活状态 >> {{kill_sc_kjj_status}}</p>
+    <input type="button" class="btn_funcs" value="Alt+K 杀屏幕广播进程" onclick="doget_use_func('kjj_killsc')">
+    <br>
+    <p>此快捷键激活状态 >> {{runFull_sc_kjj_status}}</p>
+    <input type="button" class="btn_funcs" value="Ctrl+Alt+F 以全屏运行广播命令" onclick="doget_use_func('kjj_runfullsc')">
+
+    <br>
+    <input type="button" class="purbtn_funcs" value="显示/隐藏 高级功能" onclick="show_hid_gb_devfunc()">
+
+    <div id="highfunc_btns">
+        <hr>
+        <h2 style="font-size: 20px;">温馨提醒 请不要随意输入非命令的字段并更新命令</h2>
+        <p>此功能适用于单或多机房坐在固定位置的同学</p>
+        <p>在拦截了当前教室的命令后 下次再来可以直接手动更新</p>
+        <p>而不必再次重新拦截 （省事!</p>
+        <form action="/guangbo" method="post">
+        <!-- <label for="yc_cmd_input">输入远程命令</label> -->
+        <p>请于下方输入远程命令参数</p>
+        <input type="text" name="yc_cmd" id="yc_cmd_input" required>
+        
+        <!-- <textarea name="yc_cmd" id="yc_cmd_input" cols="30" rows="10"></textarea> -->
+        <br>
+        <input type="submit" class="purbtn_funcs" value="手动更新远程命令">
+        </form>
+
+        <input type="button" class="purbtn_funcs" value="读取并保存当前已拦截的广播命令" onclick="doget_use_normal('func/saveYCcmd')">
+
+
+
+
+        <!-- <hr> -->
+    </div>
+
+</div>
+	</body>
+</html>

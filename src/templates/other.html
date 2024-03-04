@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<script src="../static/func.js"></script>
+		<link rel="stylesheet" href="../static/bruh.css" />
+		<link rel="icon" href="../templates/favicon.ico" type="image/x-icon" />
+		<title>OsEasyToolBox-Lite</title>
+		
+		<style>
+			
+			#dhl_2 {
+				
+				background-color: aquamarine;
+				cursor: default;
+				
+			}
+			
+
+
+		</style>
+		
+		
+	</head>
+	<body>
+
+<div id="dhl">
+	<div id="dhl_0" onmouseover="dhl_on_jiaodian(this)" onmouseleave="dhl_on_likai(this)" onclick="dhl_jump_page('ToolBox')">
+		
+	<p>关于</p>
+	
+	</div>
+
+	<div id="dhl_1" onmouseover="dhl_on_jiaodian(this)" onmouseleave="dhl_on_likai(this)" onclick="dhl_jump_page('Progress')">
+		<!-- 将自己传递进函数 -->
+	<p>进程管理</p>
+	
+	</div>
+	<div id="dhl_2">
+		
+	<p>其他管理</p>
+	
+	</div>
+	<div id="dhl_3" onmouseover="dhl_on_jiaodian(this)" onmouseleave="dhl_on_likai(this)" onclick="dhl_jump_page('guangbo')">
+		
+	<p>广播管理</p>
+	
+	</div>
+</div>
+
+<div id="main">
+
+<input type="button" class="btn_funcs" id="delbat" value="删除生成的脚本文件(慎用)" onclick="doget_use_func('delbat')">
+<hr>
+<!-- <br /> -->
+
+<p>需要注销 会有5秒等待自动注销 或者你可以直接按任意键跳过等待</p>
+<input type="button" class="btn_funcs" id="delkbl_mtc" value="删除键盘锁驱动&控屏锁定程序" onclick="doget_use_func('delkbl_mtc')">
+<br />
+<hr>
+<p>无需注销 但如果被控屏锁定上键盘那就有点..难蚌了</p>
+<input type="button" class="btn_funcs" id="only_delmtc" value="仅删除控屏锁定程序" onclick="doget_use_func('only_delmtc')">
+<hr>
+<!-- <br /> -->
+
+<input type="button" class="btn_funcs" id="restone_all" value="恢复所有已备份的删除文件" onclick="doget_use_func('restone_all')">
+<br />
+<input type="button" class="btn_funcs" id="restone_mtc" value="仅恢复控屏锁定程序" onclick="doget_use_func('restone_mtc')">
+<br />
+
+<input type="button" class="btn_funcs" id="unlock_net" value="解锁软件网络限制" onclick="doget_use_func('unlock_net')">
+
+	</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+
+
+<html>
+<head>
+	<meta charset="utf-8">
+<title>OsEasyToolBox-Lite</title>
+<link rel="icon" href="../templates/favicon.ico" type="image/x-icon" />
+<script src="../static/func.js"></script>
+<link rel="stylesheet" href="../static/bruh.css" />
+<style>
+	
+#dhl_1 {background-color: aquamarine;
+
+cursor: default;
+
+}
+
+</style>
+
+
+</head>
+<body>
+
+<div id="dhl">
+	
+	<div id="dhl_0" onmouseover="dhl_on_jiaodian(this)" onmouseleave="dhl_on_likai(this)" onclick="dhl_jump_page('ToolBox')">
+		<!-- 将自己传递进函数 -->
+	<p>关于</p>
+	
+	</div>
+	
+	<!-- <div id="dhl_1" onmouseover="dhl_on_jiaodian(this)" onmouseleave="dhl_on_likai(this)" onclick=""> -->
+	<div id="dhl_1">
+		
+		<!-- 将自己传递进函数 -->
+	<p>进程管理</p>
+	
+	</div>
+	<div id="dhl_2" onmouseover="dhl_on_jiaodian(this)" onmouseleave="dhl_on_likai(this)" onclick="dhl_jump_page('other')">
+		
+	<p>其他管理</p>
+	
+	</div>
+	<div id="dhl_3" onmouseover="dhl_on_jiaodian(this)" onmouseleave="dhl_on_likai(this)" onclick="dhl_jump_page('guangbo')">
+		
+	<p>广播管理</p>
+	
+	</div>
+</div>
+
+<div id="main">
+
+<p>可以通过手动刷新更新显示状态</p>
+<p>有时自动刷新不管事(摊手)</p>
+<br />
+
+<p>学生端根服务状态 >> {{ gfw_status }}</p>
+
+<input type="button" class="btn_funcs" id="of_on_gfw" value="开&关学生端根服务" onclick="doget_use_func_with_wait('gfw')">
+
+<br />
+
+<input type="button" class="btn_funcs" id="shift_tihuan" value="注册粘滞键替换" onclick="doget_use_func('shift_tihuan')">
+
+<br />
+
+<input type="button" class="btn_funcs" id="restart_student" value="重启学生端" onclick="doget_use_func('reBootStudent')">
+
+<br />
+
+<p>守护进程状态 >> {{ Protect_status }}</p>
+
+<input type="button" class="btn_funcs" id="shjc" value="外部cmd守护进程" onclick="doget_use_func('shjc')">
+
+<br />
+
+<p>挂起进程状态 >> {{ guaqi_status }}</p>
+
+<input type="button" class="btn_funcs" id="guaqi" value="挂起学生端进程" onclick="doget_use_func_with_wait('guaqi')">
+
+<br />
+
+<input type="button" class="btn_funcs" id="opentools" value="打开噢易自带工具" onclick="doget_use_func('openTool')">
+
+
+
+</div>
+
+
+
+</body>
+
+
+
+</html>

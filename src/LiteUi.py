@@ -87,8 +87,8 @@ def web_unlock_net():
 
 @server.route("/func/unlock_usb",methods=['get'])
 def web_unlock_usb():
-    #预留功能函数
-    return "404"
+    usb_unlock()
+    return "200"
     
 # TypeError: The view function did not return a valid response. 
 # The return type must be a string, dict, list, tuple with headers or status, 

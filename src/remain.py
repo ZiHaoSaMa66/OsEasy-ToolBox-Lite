@@ -8,10 +8,11 @@ import ctypes
 import sys
 import psutil
 import pyautogui
+import re
 
 # import wmi
 # from mainv3 import Ui
-
+import subprocess
 from multiprocessing import Process,Queue
 import signal
 
@@ -178,9 +179,9 @@ def get_key_value(key):
 
 def get_guangbo_words():
     '''获取广播页状态关键字'''
-    global Open_KJJ_SCR,Open_KJJ_FullSC
+    global Open_KJJ_SCR,Open_KJJ_FullSC,Open_KJJ_WindowsSC
     fl = []
-    il = [Open_KJJ_SCR,Open_KJJ_FullSC]
+    il = [Open_KJJ_SCR,Open_KJJ_FullSC,Open_KJJ_WindowsSC]
     for i in il:
         if i ==False:
             fl.append("未开启")
@@ -194,12 +195,12 @@ def get_guangbo_words():
         fdbyc = "无拦截命令缓存"
     else:
         fdbyc = "已获取到拦截命令"
-    return fl[0],fl[1],fdbyc
+    return fl[0],fl[1],fdbyc,fl[2]
     pass
 
 def SCR_on_press(key):
     '''用于检测快捷键杀SCR_Y进程'''
-    global SCR_Press_Alt,SCR_Press_K
+    global SCR_Press_Alt,SCR_Press_K,kongping_exe_name
     if key == keyboard.KeyCode(char="K") or key == keyboard.KeyCode(char="k"):
         SCR_Press_K = True
     if key == keyboard.Key.alt or key == keyboard.Key.alt_l or key == keyboard.Key.alt_r:
@@ -208,9 +209,30 @@ def SCR_on_press(key):
     if SCR_Press_Alt and SCR_Press_K:
         SCR_Press_Alt = SCR_Press_K = False #重置按键按下状态
         # get_scshot()
-        runcmd("taskkill /f /t /im ScreenRender_Y.exe")
-        runcmd("taskkill /f /t /im ScreenRender.exe")
+        runcmd(f"taskkill /f /t /im {kongping_exe_name}_Y.exe")
+        runcmd(f"taskkill /f /t /im {kongping_exe_name}.exe")
 
+
+WindowsSC_Alt = False
+WindowsSC_E = False
+
+def WindowsSC_on_press(key):
+    '''用于快捷键运行窗口化控制窗口'''
+    global WindowsSC_Alt,WindowsSC_E
+    if key == keyboard.KeyCode(char="E") or key == keyboard.KeyCode(char="e"):
+        WindowsSC_E = True
+    if key == keyboard.Key.alt or key == keyboard.Key.alt_l or key == keyboard.Key.alt_r:
+        WindowsSC_Alt= True
+    
+    if WindowsSC_E and WindowsSC_Alt:
+        WindowsSC_E = WindowsSC_Alt = False
+        r = get_yuancheng_cmd()
+        if r==None:
+            ZiHao_logger.error("未拦截到控制命令参数")
+        else:
+            bcmd = build_run_srcmd(YC_command=r)
+            runcmd(bcmd)
+    
 
 def FullSC_on_press(key):
     '''用于快捷键运行全屏控制窗口'''
@@ -261,14 +283,18 @@ FullSC_Press_Ctrl = False
 
 Open_KJJ_FullSC = False
 Open_KJJ_SCR = False
+Open_KJJ_WindowsSC = False
+
 
 RunFullSC_listener = keyboard.Listener(on_press=FullSC_on_press)
 
 KillSCR_listener = keyboard.Listener(on_press=SCR_on_press)
 
+RunWindowsSC_listener = keyboard.Listener(on_press=WindowsSC_on_press)
+
 def kjj_open_loj(wich_kjj:str):
     '''打开/关闭快捷键的逻辑触发函数'''
-    global Open_KJJ_SCR,Open_KJJ_FullSC,RunFullSC_listener,KillSCR_listener
+    global Open_KJJ_SCR,Open_KJJ_FullSC,RunFullSC_listener,KillSCR_listener,Open_KJJ_WindowsSC
     
     # ZiHao_logger.debug(f"exc scr > {Open_KJJ_SCR} fullsc {Open_KJJ_FullSC}")
     
@@ -298,7 +324,17 @@ def kjj_open_loj(wich_kjj:str):
             
             Open_KJJ_FullSC = False
             RunFullSC_listener.stop()
+    
+    elif wich_kjj =="WinSC":
+        if Open_KJJ_WindowsSC==False:
+            Open_KJJ_WindowsSC = True
+            RunWindowsSC_listener.run()
         
+        elif Open_KJJ_WindowsSC==True:
+            Open_KJJ_WindowsSC = False
+            RunWindowsSC_listener.stop()
+
+    
         pass
 
 def guaqi_student_loj():
@@ -307,6 +343,9 @@ def guaqi_student_loj():
     ZiHao_logger.debug(f"Runed guqistatus > {GuaQi_Status}")
     if GuaQi_Status==False:
         fdb = guaqi_process("Student.exe")
+        fdb_ = guaqi_process("MultiClient.exe")
+        ZiHao_logger.debug(f"MultiClient 挂起返回信息 >{fdb_}")
+        
         if fdb ==True:
             GuaQi_Status=True
             return "200"
@@ -315,12 +354,40 @@ def guaqi_student_loj():
             return f"挂起进程异常:{fdb}"
     else:
         fdb = huifu_process("Student.exe")
+        fdb_ = huifu_process("MultiClient.exe")
+        ZiHao_logger.debug(f"MultiClient 恢复返回信息 >{fdb_}")
+        
         if fdb ==True:
             GuaQi_Status=False
             return "200"
         else:
             GuaQi_Status=False
             return f"恢复挂起进程异常:{fdb}"
+
+kongping_exe_name = "ScreenRender"
+
+
+def old_ver_name_swc():
+    '''对旧版本的噢易进行支持\n
+    替换ScreenRender字段为ScreenSender\n
+    虽然不知道能不能用吧...\n
+    主包说实话没想到旧版本是没有ScreenRender的'''
+    global kongping_exe_name
+    
+    # 现在觉得自己写的好shi啊 牵一发动全身 笨蛋写法
+    # 二编: 没用过老版本噢易不知道是不是和新版的ScreenRender一样的逻辑
+    if kongping_exe_name =="ScreenRender":
+        ZiHao_logger.success("替换ScreenRender字段为 >> ScreenSender")
+        
+        kongping_exe_name = "ScreenSender"
+        
+    elif kongping_exe_name =="ScreenSender":
+        ZiHao_logger.success("替换ScreenSender字段为 >> ScreenRender")
+        
+        kongping_exe_name = "ScreenRender"
+    
+    
+    pass
 
 def get_progress_word():
     global RunProtectCMD,GuaQi_Status
@@ -345,14 +412,29 @@ def get_progress_word():
     
     return mmpc_text,pro_text,GuaQi_text
 
+def summon_unlock_usb():
+    '''生成解锁USB脚本'''
+    global cmdpath
+    mp = cmdpath + "\\usb.bat"
+    fm = open(mp,"w")
+    cmdtext = "@ECHO OFF\ntitle OsEasyToolBoxUnlockUSBHeler\n:a\ntaskkill /f /t /im DeviceControl_x64.exe\ngoto a"
+    fm.write(cmdtext)
+    fm.close()
 
-
-
+def usb_unlock():
+    '''尝试解锁USB管控'''
+    # 经过了好一段时间的研究可能真的就这样?
+    summon_unlock_usb()
+    runbat("usb.bat")
+    time.sleep(2)
+    ZiHao_logger.warn("未进行测试的功能 可能不会生效")
+    runcmd("sc delete easyusbflt")
+    time.sleep(1)
 
 
 def replace_ScreenRender():
         '''替换原有scr用于拦截远程命令'''
-        global bkppath,oseasypath
+        global bkppath,oseasypath,kongping_exe_name
         filename = "ScreenRender_Helper.exe"
         # oepath = oseasypath + filename
         # needbkpath =  bkppath + "\\" + filename
@@ -377,7 +459,7 @@ def replace_ScreenRender():
             return False
 
         ZiHao_logger.info("对原有程序重命名")
-        runcmd('rename "C:\Program Files (x86)\Os-Easy\os-easy multicast teaching system\ScreenRender.exe" "ScreenRender_Y.exe"')
+        runcmd(f'rename "C:\Program Files (x86)\Os-Easy\os-easy multicast teaching system\{kongping_exe_name}.exe" "{kongping_exe_name}_Y.exe"')
         time.sleep(2.5)
         # 将原有应用重命名
         ZiHao_logger.info("执行复制命令")
@@ -388,7 +470,7 @@ def replace_ScreenRender():
         time.sleep(2.5)
         # 复制拦截程序
         ZiHao_logger.info("为拦截程序重命名")
-        runcmd('rename "C:\Program Files (x86)\Os-Easy\os-easy multicast teaching system\ScreenRender_Helper.exe" "ScreenRender.exe"')
+        runcmd(f'rename "C:\Program Files (x86)\Os-Easy\os-easy multicast teaching system\{kongping_exe_name}_Helper.exe" "{kongping_exe_name}.exe"')
         #将拦截程序重命名
         # share_name.saveDefault_in_mtprogress("理论上已经替换完成 可自行检查替换结果")
         ZiHao_logger.success("理论上已经替换完成 可自行检查替换结果")
@@ -400,21 +482,21 @@ def replace_ScreenRender():
 
 def restone_ScreenRender():
     '''还原原有的ScreenRender'''
-    
+
     onetime_protectcheck()
-    path = "C:\Program Files (x86)\Os-Easy\os-easy multicast teaching system\ScreenRender.exe"
+    path = f"C:\Program Files (x86)\Os-Easy\os-easy multicast teaching system\{kongping_exe_name}.exe"
     check_path = "C:\Program Files (x86)\Os-Easy\os-easy multicast teaching system\ScreenRender_Y.exe"
     
     a = check_tihuan_SCRY_status()
     if a==False:
-        ZiHao_logger.error("ScreenRender_Helper.exe需要与工具箱处在同一目录")
+        ZiHao_logger.error(f"未检测到被重命名的{kongping_exe_name},也许是没有执行替换或者出了点问题?")
         return False
 
     try:
         os.remove(path)
     except FileNotFoundError:
         pass
-    runcmd('rename "C:\Program Files (x86)\Os-Easy\os-easy multicast teaching system\ScreenRender_Y.exe" "ScreenRender.exe"')
+    runcmd(f'rename "C:\Program Files (x86)\Os-Easy\os-easy multicast teaching system\{kongping_exe_name}_Y.exe" "{kongping_exe_name}.exe"')
     ZiHao_logger.success("理论上已还原完成 可自行检查结果")
     return True
 
@@ -446,10 +528,10 @@ def build_run_srcmd(YC_command):
     '''构造执行显示命令'''
     status = check_tihuan_SCRY_status()
     if status==True:
-        fdb = f'"C:\Program Files (x86)\Os-Easy\os-easy multicast teaching system\ScreenRender_Y.exe" {YC_command}'
+        fdb = f'"C:\Program Files (x86)\Os-Easy\os-easy multicast teaching system\{kongping_exe_name}_Y.exe" {YC_command}'
         return fdb
     else:
-        fdb = f'"C:\Program Files (x86)\Os-Easy\os-easy multicast teaching system\ScreenRender.exe" {YC_command}'
+        fdb = f'"C:\Program Files (x86)\Os-Easy\os-easy multicast teaching system\{kongping_exe_name}.exe" {YC_command}'
         return fdb
 
 def save_now_yccmd():
@@ -473,7 +555,7 @@ def check_tihuan_SCRY_status():
     '''通过检查SCR_Y是否存在
     \n来检查是否已经完成替换拦截程序
     \n返回True/False'''
-    check_path = "C:\Program Files (x86)\Os-Easy\os-easy multicast teaching system\ScreenRender_Y.exe"
+    check_path = f"C:\Program Files (x86)\Os-Easy\os-easy multicast teaching system\{kongping_exe_name}_Y.exe"
     try:
         fm = open(check_path,'r')
         fm.close()
@@ -950,13 +1032,30 @@ def begin_a_child_progress(func_name):
 #     pass
 
 def selfunc_g7():
+    ZiHao_logger.warn("若当前环境为Win7则有可能你的网关项会因为停止服务的同时被清空")
+    ZiHao_logger.info("可以尝试打开网络(以太网)适配器的设置重新手动填入")
+    getways_ = get_gateways()
+    ZiHao_logger.info("这是我获取到的网关值,如有多个可以逐一尝试?")
+    ZiHao_logger.info(f"{getways_}")
+    
     summon_unlocknet()
     runbat("net.bat")
     time.sleep(2)
     runcmd("sc stop OeNetlimit")
     time.sleep(1)
     usecmd_runcmd('taskkill /f /t /fi "imagename eq cmd.exe" /fi "windowtitle eq 管理员:  OsEasyToolBoxUnlockNetHeler"')
+    
     time.sleep(1)
+
+def get_gateways():
+    # 运行ipconfig命令
+    result = subprocess.run(['ipconfig'], stdout=subprocess.PIPE, text=True)
+
+    # 使用正则表达式匹配默认网关
+    matches = re.findall(r'默认网关[ .]+: ([\d.]+)', result.stdout)
+
+    return ', '.join(matches)
+
 
 def selfunc_g8(e):
 

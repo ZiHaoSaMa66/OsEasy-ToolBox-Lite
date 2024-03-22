@@ -11,8 +11,7 @@ server = flask.Flask(__name__)
 from multiprocessing import freeze_support
 # 启动守护进程 B溃修复支持
 
-Numver = "Lite 1.0"
-BackNumver = "1.6RC4+ - Lite"
+Numver = "Lite 1.1"
 
 # @server.route("/func",methods=['get'])
 # def runfunc():
@@ -87,8 +86,8 @@ def web_unlock_net():
 
 @server.route("/func/unlock_usb",methods=['get'])
 def web_unlock_usb():
-    #预留功能函数
-    return "404"
+    usb_unlock()
+    return "200"
     
 # TypeError: The view function did not return a valid response. 
 # The return type must be a string, dict, list, tuple with headers or status, 
@@ -103,6 +102,11 @@ def run_opengithub():
 # Return_vaule = ""
 
 #Page3
+
+@server.route("/func/old_oe_supt",methods=['get'])
+def old_oe_supt():
+    old_ver_name_swc()
+    return "200"
 
 @server.route("/func/replaceSCR",methods=['get'])
 def web_replaceSCR():
@@ -138,11 +142,14 @@ def web_RunFullWincmd():
             runcmd(bcmd)
     return "None"
 
+
 @server.route("/func/killscr",methods=['get'])
 def web_kill_scr():
     runcmd("taskkill /f /t /im ScreenRender_Y.exe")
     runcmd("taskkill /f /t /im ScreenRender.exe")
-
+    
+    runcmd("taskkill /f /t /im ScreenSender_Y.exe")
+    runcmd("taskkill /f /t /im ScreenSender.exe")
     return "200"
 
 @server.route("/func/restoneSCR",methods=['get'])
@@ -150,8 +157,14 @@ def web_restoneSCR():
     begin_a_child_progress(restone_ScreenRender)
     return "200"
 
-@server.route("/func/kjj_killsc",methods=['get'])
+
+@server.route("/func/kjj_winsc",methods=['get'])
 def web_kjj_killsc():
+    kjj_open_loj("WinSC")
+    return "200"
+
+@server.route("/func/kjj_killsc",methods=['get'])
+def web_kjj_winsc():
     kjj_open_loj("SCR")
     return "200"
 
@@ -230,14 +243,15 @@ def page3():
     # else:
     #     Return_value_mix = None
         
-    scjjc,fullsc,yccmd_word = get_guangbo_words()
+    scjjc,fullsc,yccmd_word,winsc = get_guangbo_words()
 
     data_tran = {
         
         # "function_feedback": Return_value_mix,
         "kill_sc_kjj_status": scjjc,
         "runFull_sc_kjj_status": fullsc,
-        "alreadyget_cmd": yccmd_word
+        "alreadyget_cmd": yccmd_word,
+        "runWindows_sc_kjj_status": winsc
     }
 
     return render_template("guangbo.html",**data_tran)

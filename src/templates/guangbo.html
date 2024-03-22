@@ -61,6 +61,10 @@
 
     <p>命令拦截状态 >> {{alreadyget_cmd}}</p>
 
+    <input type="button" class="btn_funcs" value="替换程序名字段" onclick="doget_use_normal('func/old_oe_supt')">
+    <!-- <p>注: 如果你不确定需不需要替换 那还是建议别按 :)</p> -->
+    <br>
+
     <input type="button" class="btn_funcs" value="替换拦截命令程序" onclick="doget_use_normal('func/replaceSCR')">
     <br>
     <input type="button" class="btn_funcs" value="运行窗口化广播命令" onclick="doget_use_normal('func/RunWincmd')">
@@ -70,9 +74,15 @@
     <input type="button" class="btn_funcs" value="手动杀屏幕广播进程" onclick="doget_use_normal('func/killscr')">
     <br>
     <input type="button" class="btn_funcs" value="还原原有屏幕广播程序" onclick="doget_use_normal('func/restoneSCR')">
+
     <br>
     <p>此快捷键激活状态 >> {{kill_sc_kjj_status}}</p>
     <input type="button" class="btn_funcs" value="Alt+K 杀屏幕广播进程" onclick="doget_use_func('kjj_killsc')">
+
+    <br>
+    <p>此快捷键激活状态 >> {{runWindows_sc_kjj_status}}</p>
+    <input type="button" class="btn_funcs" value="Alt+E 运行窗口屏幕广播" onclick="doget_use_func('kjj_winsc')">
+
     <br>
     <p>此快捷键激活状态 >> {{runFull_sc_kjj_status}}</p>
     <input type="button" class="btn_funcs" value="Ctrl+Alt+F 以全屏运行广播命令" onclick="doget_use_func('kjj_runfullsc')">

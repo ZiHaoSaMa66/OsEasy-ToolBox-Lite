@@ -12,7 +12,7 @@ import re
 
 # import wmi
 # from mainv3 import Ui
-
+import subprocess
 from multiprocessing import Process,Queue
 import signal
 
@@ -179,9 +179,9 @@ def get_key_value(key):
 
 def get_guangbo_words():
     '''获取广播页状态关键字'''
-    global Open_KJJ_SCR,Open_KJJ_FullSC
+    global Open_KJJ_SCR,Open_KJJ_FullSC,Open_KJJ_WindowsSC
     fl = []
-    il = [Open_KJJ_SCR,Open_KJJ_FullSC]
+    il = [Open_KJJ_SCR,Open_KJJ_FullSC,Open_KJJ_WindowsSC]
     for i in il:
         if i ==False:
             fl.append("未开启")
@@ -195,7 +195,7 @@ def get_guangbo_words():
         fdbyc = "无拦截命令缓存"
     else:
         fdbyc = "已获取到拦截命令"
-    return fl[0],fl[1],fdbyc
+    return fl[0],fl[1],fdbyc,fl[2]
     pass
 
 def SCR_on_press(key):
@@ -212,6 +212,27 @@ def SCR_on_press(key):
         runcmd(f"taskkill /f /t /im {kongping_exe_name}_Y.exe")
         runcmd(f"taskkill /f /t /im {kongping_exe_name}.exe")
 
+
+WindowsSC_Alt = False
+WindowsSC_E = False
+
+def WindowsSC_on_press(key):
+    '''用于快捷键运行窗口化控制窗口'''
+    global WindowsSC_Alt,WindowsSC_E
+    if key == keyboard.KeyCode(char="E") or key == keyboard.KeyCode(char="e"):
+        WindowsSC_E = True
+    if key == keyboard.Key.alt or key == keyboard.Key.alt_l or key == keyboard.Key.alt_r:
+        WindowsSC_Alt= True
+    
+    if WindowsSC_E and WindowsSC_Alt:
+        WindowsSC_E = WindowsSC_Alt = False
+        r = get_yuancheng_cmd()
+        if r==None:
+            ZiHao_logger.error("未拦截到控制命令参数")
+        else:
+            bcmd = build_run_srcmd(YC_command=r)
+            runcmd(bcmd)
+    
 
 def FullSC_on_press(key):
     '''用于快捷键运行全屏控制窗口'''
@@ -262,14 +283,18 @@ FullSC_Press_Ctrl = False
 
 Open_KJJ_FullSC = False
 Open_KJJ_SCR = False
+Open_KJJ_WindowsSC = False
+
 
 RunFullSC_listener = keyboard.Listener(on_press=FullSC_on_press)
 
 KillSCR_listener = keyboard.Listener(on_press=SCR_on_press)
 
+RunWindowsSC_listener = keyboard.Listener(on_press=WindowsSC_on_press)
+
 def kjj_open_loj(wich_kjj:str):
     '''打开/关闭快捷键的逻辑触发函数'''
-    global Open_KJJ_SCR,Open_KJJ_FullSC,RunFullSC_listener,KillSCR_listener
+    global Open_KJJ_SCR,Open_KJJ_FullSC,RunFullSC_listener,KillSCR_listener,Open_KJJ_WindowsSC
     
     # ZiHao_logger.debug(f"exc scr > {Open_KJJ_SCR} fullsc {Open_KJJ_FullSC}")
     
@@ -299,7 +324,17 @@ def kjj_open_loj(wich_kjj:str):
             
             Open_KJJ_FullSC = False
             RunFullSC_listener.stop()
+    
+    elif wich_kjj =="WinSC":
+        if Open_KJJ_WindowsSC==False:
+            Open_KJJ_WindowsSC = True
+            RunWindowsSC_listener.run()
         
+        elif Open_KJJ_WindowsSC==True:
+            Open_KJJ_WindowsSC = False
+            RunWindowsSC_listener.stop()
+
+    
         pass
 
 def guaqi_student_loj():
@@ -331,16 +366,25 @@ def guaqi_student_loj():
 
 kongping_exe_name = "ScreenRender"
 
+
 def old_ver_name_swc():
-    global kongping_exe_name
     '''对旧版本的噢易进行支持\n
     替换ScreenRender字段为ScreenSender\n
     虽然不知道能不能用吧...\n
     主包说实话没想到旧版本是没有ScreenRender的'''
+    global kongping_exe_name
     
     # 现在觉得自己写的好shi啊 牵一发动全身 笨蛋写法
-    
-    kongping_exe_name = "ScreenSender"
+    # 二编: 没用过老版本噢易不知道是不是和新版的ScreenRender一样的逻辑
+    if kongping_exe_name =="ScreenRender":
+        ZiHao_logger.success("替换ScreenRender字段为 >> ScreenSender")
+        
+        kongping_exe_name = "ScreenSender"
+        
+    elif kongping_exe_name =="ScreenSender":
+        ZiHao_logger.success("替换ScreenSender字段为 >> ScreenRender")
+        
+        kongping_exe_name = "ScreenRender"
     
     
     pass
@@ -988,28 +1032,29 @@ def begin_a_child_progress(func_name):
 #     pass
 
 def selfunc_g7():
+    ZiHao_logger.warn("若当前环境为Win7则有可能你的网关项会因为停止服务的同时被清空")
+    ZiHao_logger.info("可以尝试打开网络(以太网)适配器的设置重新手动填入")
+    getways_ = get_gateways()
+    ZiHao_logger.info("这是我获取到的网关值,如有多个可以逐一尝试?")
+    ZiHao_logger.info(f"{getways_}")
+    
     summon_unlocknet()
     runbat("net.bat")
     time.sleep(2)
     runcmd("sc stop OeNetlimit")
     time.sleep(1)
     usecmd_runcmd('taskkill /f /t /fi "imagename eq cmd.exe" /fi "windowtitle eq 管理员:  OsEasyToolBoxUnlockNetHeler"')
+    
     time.sleep(1)
 
-def get_netcard_info():
-    '''获取网卡信息'''
-    pass
-    # result = os.popen('ipconfig')  
-    # res = result.read()  
+def get_gateways():
+    # 运行ipconfig命令
+    result = subprocess.run(['ipconfig'], stdout=subprocess.PIPE, text=True)
 
-    # resultlist = re.findall('''(?<=默认网关 ).*?(?=:)''', res)  
+    # 使用正则表达式匹配默认网关
+    matches = re.findall(r'默认网关[ .]+: ([\d.]+)', result.stdout)
 
-    # print(resultlist)  
-
-    # return resultlist  
-
-    # pass
-
+    return ', '.join(matches)
 
 
 def selfunc_g8(e):

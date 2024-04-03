@@ -1,7 +1,5 @@
-# OsEasy-ToolBox-Lite
-
-基于Python Flask + 网页的   
-简陋的噢易多媒体网络教室工具箱轻量版   
+![BakaToolBox](https://socialify.git.ci/ZiHaoSaMa66/OsEasy-ToolBox-Lite/image?description=1&descriptionEditable=%E7%AE%80%E9%99%8B%E7%9A%84%E5%99%A2%E6%98%93%E5%A4%9A%E5%AA%92%E4%BD%93%E7%BD%91%E7%BB%9C%E6%95%99%E5%AE%A4%E5%B7%A5%E5%85%B7%E7%AE%B1%E8%BD%BB%E9%87%8F%E7%89%88&font=Jost&issues=1&language=1&logo=https%3A%2F%2Favatars.githubusercontent.com%2Fu%2F134737096&name=1&owner=1&pattern=Circuit%20Board&pulls=1&stargazers=1&theme=Auto)
+---
 
 [![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/ZiHaoSaMa66/OsEasy-ToolBox-Lite?label=%E6%9C%80%E6%96%B0%E7%89%88&style=for-the-badge&include_prereleases&color=pink)](https://github.com/ZiHaoSaMa66/OsEasy-ToolBox-Lite/releases)
 ![GitHub all releases download](https://img.shields.io/github/downloads/ZiHaoSaMa66/OsEasy-ToolBox-Lite/total?style=for-the-badge&label=%E6%80%BB%E4%B8%8B%E8%BD%BD%E9%87%8F&color=orange)
@@ -17,7 +15,9 @@
 (搜到的都是什么~~人机~~噢易的官网)    
 搜来搜去实在找不到只能自己动手丰衣足食了   
 **工具箱需要以管理员权限运行!**   
-> 但是只能说勉强能用 哥们编程也就那样了💦💦     
+适用于``V10.8.2.4411``桌面云环境的噢易学生端      
+**不保证功能在其他版本的噢易学生端中均可用**    
+> 哥们编程也就那样了💦💦     
 > 前端是真现学现卖 外观差很多 但是能用（     
  
 
@@ -68,4 +68,5 @@
 > 如果可以的话... 点一个吧plz qwq     
 
 有问题&发现Bug&提供建议可以提提issue     
+同时如果你有兴趣也可以开开PR    
 愿我们的电脑课都不再无聊~🥳   

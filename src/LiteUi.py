@@ -11,11 +11,17 @@ server = flask.Flask(__name__)
 from multiprocessing import freeze_support
 # 启动守护进程 B溃修复支持
 
-Numver = "Lite 1.1"
+Numver = "Lite 1.2"
 
 # @server.route("/func",methods=['get'])
 # def runfunc():
 #     pass
+
+@server.route("/func/reflashOEPath",methods=['get'])
+def reGetOEPath():
+    OsEasyPath_init()
+    return "200"
+
 
 @server.route("/func/gfw",methods=['get'])
 def stop_start_gfw():
@@ -186,7 +192,8 @@ def web_upate_yc_cmd():
     handin_save_yc_cmd(yc_cmd)
     ZiHao_logger.debug(f"wirte yccmd > {yc_cmd}")
     return page3()
-    
+
+
 #最后也要至少返回一个值回来...
 
 #TypeError: The view function for 'web_RunWincmd' did not return a valid response. 
@@ -199,6 +206,51 @@ def web_upate_yc_cmd():
 
 # @server.route("/")
 # def 
+
+@server.route("/func/SPs_onekcloseSTD",methods=['get'])
+def onekey_closeStudent():
+    '''一键关闭学生端'''
+    runcmd("taskkill>nul 2>nul /f /t /im ProcessProtect.exe")
+    time.sleep(0.7)
+    runcmd("taskkill>nul 1>nul /f /t /im Student.exe")
+    
+    return "200"
+
+@server.route("/func/SPs_gqssdjc",methods=['get'])
+def guaqi_xxdjc():
+    '''挂起旧版学生端进程'''
+    runcmd("taskkill>nul 2>nul /f /t /im ProcessProtect.exe")
+    guaqi_student_loj()
+    return "200"
+    
+@server.route("/func/SPs_regOldSLMCMD",methods=['get'])
+def regs_oldcmds():
+    '''替换粘滞键为旧版通杀命令脚本'''
+    regkillerV2cmd()
+    
+    return "200"
+
+
+@server.route("/func/SPs_blowup_Net",methods=['get'])
+def sp_blowupNet():
+    '''运行旧版本爆破网络管控'''
+
+    summon_SP_unlock_net()
+    runbat("SPnet.bat")
+
+    return "200"
+
+@server.route("/func/SPs_blowup_Usb",methods=['get'])
+def sp_blowupUsb():
+    '''运行旧版本爆破USB管控'''
+
+    summon_SP_unlock_usb()
+    runbat("SPusb.bat")
+    
+    return "200"
+
+# ===================
+
 @server.route('/')
 def index():
     return render_template("ToolBox.html",GUI_ver=Numver)
@@ -226,6 +278,18 @@ def page2():
 
     return render_template("other.html")
 
+@server.route('/sp')
+def pageSP():
+
+    t1,t2,t3=get_progress_word()
+    
+    datatran = {
+        
+        "guaqi_status": t3
+    }
+
+
+    return render_template("sp.html",**datatran)
 
 
 @server.route('/guangbo')
@@ -266,6 +330,7 @@ if __name__ == '__main__':
     log.disabled = True
     ZiHao_logger.info("OsEasyToolBox-Lite 欢迎回来sa~")
     ZiHao_logger.success(f"当前工具箱版本为 {Numver}")
+    OsEasyPath_init()
     # print(f"后端分支版本 {}")
     ZiHao_logger.success("工具箱界面地址 > http://127.0.0.1:22330/")
     webbrowser.open("http://127.0.0.1:22330/ToolBox")

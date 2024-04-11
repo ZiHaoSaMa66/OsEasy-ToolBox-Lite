@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+
+
+<html>
+<head>
+	<meta charset="utf-8">
+	<link rel="icon" href="../templates/favicon.ico" type="image/x-icon" />
+<script src="../static/func.js"></script>
+<link rel="stylesheet" href="../static/bruh.css" />
+<title>OsEasyToolBox-Lite</title>
+<style>
+
+
+	#dhl_4 {
+		float: left;
+		line-height: 60px;
+		text-align: center;
+		width: 100px;
+		height: 60px;
+		background-color: aquamarine;
+		
+		cursor: default;
+		
+	}
+
+
+
+</style>
+
+
+
+</head>
+<body>
+
+<div id="dhl">
+
+	<div id="dhl_0" onmouseover="dhl_on_jiaodian(this)" onmouseleave="dhl_on_likai(this)" onclick="dhl_jump_page('ToolBox')">
+		
+        <p>关于</p>
+        
+        </div>
+
+	<div id="dhl_1" onmouseover="dhl_on_jiaodian(this)" onmouseleave="dhl_on_likai(this)" onclick="dhl_jump_page('Progress')">
+		<!-- 将自己传递进函数 -->
+	<p>进程管理</p>
+	
+	</div>
+	<div id="dhl_2" onmouseover="dhl_on_jiaodian(this)" onmouseleave="dhl_on_likai(this)" onclick="dhl_jump_page('other')">
+		
+	<p>其他管理</p>
+	
+	</div>
+	<div id="dhl_3" onmouseover="dhl_on_jiaodian(this)" onmouseleave="dhl_on_likai(this)" onclick="dhl_jump_page('guangbo')">
+		
+	<p>广播管理</p>
+	
+	</div>
+
+	<div id="dhl_4">
+		
+	<p>特殊</p>
+
+    </div>
+
+</div>
+
+<div id="main">
+<p>此选项卡中内容根据V10.5.0.2558版本进行针对开发</p>
+<!-- <p>仅限于噢易安装于默认路径</p> -->
+
+<hr>
+
+
+<input type="button" class="btn_funcs" value="一键关闭学生端" onclick="doget_use_func('SPs_onekcloseSTD')">
+<br>
+
+<p>挂起进程状态 >> {{ guaqi_status }}</p>
+
+<input type="button" class="btn_funcs" value="挂起学生端进程" onclick="doget_use_func('SPs_gqssdjc')">
+<br>
+
+<input type="button" class="btn_funcs" value="注册粘滞键替换脚本" onclick="doget_use_func('SPs_regOldSLMCMD')">
+<p>旧版本的进程通杀脚本 全班都被控制&黑屏安静了? 小手只需点点粘滞键你将脱颖而出</p>
+<hr>
+<p style="margin-top: 10px;">经测试理论上只需要执行一次爆破管控就可以把对应的管控干掉了...</p>
+<p>注:一直开着脚本会很占CPU资源</p>
+<input type="button" class="btn_funcs" value="运行爆破网络管控脚本" onclick="doget_use_func('SPs_blowup_Net')">
+<br>
+<input type="button" class="btn_funcs" value="运行爆破U盘管控脚本" onclick="doget_use_func('SPs_blowup_Usb')">
+<br>
+
+
+
+</div>
+
+
+
+
+
+</body>
+
+
+
+</html>

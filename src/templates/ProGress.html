@@ -47,6 +47,13 @@ cursor: default;
 	<p>广播管理</p>
 	
 	</div>
+
+	<div id="dhl_4" onmouseover="dhl_on_jiaodian(this)" onmouseleave="dhl_on_likai(this)" onclick="dhl_jump_page('sp')">
+		
+		<p>特殊</p>
+		
+	</div>
+
 </div>
 
 <div id="main">
@@ -54,6 +61,10 @@ cursor: default;
 <p>可以通过手动刷新更新显示状态</p>
 <p>有时自动刷新不管事(摊手)</p>
 <br />
+
+<input type="button" class="btn_funcs" id="REgetoepath" value="重新获取学生端路径" onclick="doget_use_func_with_wait('reflashOEPath')">
+
+<br>
 
 <p>学生端根服务状态 >> {{ gfw_status }}</p>
 

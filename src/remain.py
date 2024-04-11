@@ -33,7 +33,8 @@ path_zidingyi_yiyan = "C:\\Users\\Administrator\\temp\\rod\\path_yiyan.txt"
 
 
 
-
+        
+    
 class Logger():
     '''日志记录器'''
 
@@ -166,6 +167,36 @@ os.makedirs(bkppath,mode=0o777,exist_ok=True)
 os.makedirs(_loginpj,mode=0o777,exist_ok=True)
 
 temp_get = None
+
+
+
+
+def OsEasyPath_init():
+    '''通过学生端进程获取噢易的安装目录
+    \n以应对不同安装路径'''
+    global oseasypath
+    process_name = "Student.exe"
+    try:
+        for process in psutil.process_iter(['pid', 'name']):
+            if process.info['name'] == process_name:
+                pid = process.info['pid']
+                oepath = process.exe()
+                oseasypath = oepath[:-11]
+                
+                
+                ZiHao_logger.success(f"获取到的学生端路径为 {oseasypath}")
+                return 
+        ZiHao_logger.warn("未找到学生端进程! 将使用默认安装路径")
+        
+        
+    except psutil.AccessDenied as e:
+        ZiHao_logger.error(f"初始化学生端路径:权限不足错误: {e}")
+    except Exception as err:
+        ZiHao_logger.error(f"初始化学生端路径出现了意料之外的错误诶: {err}")
+        
+        
+
+
 
 def get_key_value(key):
     '''获取key在后端remain的变量值'''
@@ -412,6 +443,58 @@ def get_progress_word():
     
     return mmpc_text,pro_text,GuaQi_text
 
+DeviceControlPath = None
+
+def GetDeviceControlPath():
+    '''尝试获取DeviceControl_x64.exe的运行路径
+    \n获取失败则使用学生端路径进行拼接'''
+    global DeviceControlPath,oseasypath,defalutoepath
+    process_name = "DeviceControl_x64.exe"
+    try:
+        for process in psutil.process_iter(['pid', 'name']):
+            if process.info['name'] == process_name:
+                pid = process.info['pid']
+                dcpath_ = process.exe()
+                
+                DeviceControlPath = dcpath_
+                
+                ZiHao_logger.success(f"获取到的管控软件路径为 {dcpath_}")
+                return 
+        ZiHao_logger.warn("未找到管控软件进程! 将使用学生端路径进行拼接")
+        
+        DeviceControlPath = oseasypath + "devicecontrol_x64\\DeviceControl_x64.exe"
+        
+    except psutil.AccessDenied as e:
+        ZiHao_logger.error(f"获取管控软件路径:权限不足错误: {e}")
+    except Exception as err:
+        ZiHao_logger.error(f"获取管控软件路径出现了意料之外的错误诶: {err}")
+        
+    
+    pass
+
+
+def summon_SP_unlock_usb():
+    global cmdpath,DeviceControlPath
+    GetDeviceControlPath()
+    
+    mp = cmdpath + "\\SPusb.bat"
+    fm = open(mp,"w")
+    cmdtext = f'@ECHO OFF\ntitle OsEasyToolBox - SP_UnLockUsb\n:a\n"{DeviceControlPath}">nul 1>nul --type usb --operation 0\necho Blow up onetime USBLock...\ngoto a'
+    fm.write(cmdtext)
+    fm.close()
+    pass
+
+def summon_SP_unlock_net():
+    global cmdpath,DeviceControlPath
+    GetDeviceControlPath()
+    
+    mp = cmdpath + "\\SPnet.bat"
+    fm = open(mp,"w")
+    cmdtext = f'@ECHO OFF\ntitle OsEasyToolBox - SP_UnLockNet\n:a\n"{DeviceControlPath}">nul 1>nul --type net --operation 0\necho Blow up onetime NetLock...\ngoto a'
+    
+    fm.write(cmdtext)
+    fm.close()
+    
 def summon_unlock_usb():
     '''生成解锁USB脚本'''
     global cmdpath
@@ -745,7 +828,7 @@ def startprotect():
 def delcmdfiles():
     '''删除生成的脚本文件'''
     global cmdpath
-    fln = ["k.bat","d.bat","temp.bat","kv2.bat",'net.bat']
+    fln = ["k.bat","d.bat","temp.bat","kv2.bat",'net.bat',"SPusb.bat","SPnet.bat"]
     for i in fln:
         try:
             swpath = cmdpath + "\\" + i
@@ -780,7 +863,7 @@ def summon_killerV2():
     global cmdpath
     mp = cmdpath + "\\kv2.bat"
     fm = open(mp,"w")
-    cmdtext = "@ECHO OFF\ntitle OsEasyToolBoxKillerV2\n:awa\nfor %%p in (Ctsc_Multi.exe,DeviceControl_x64.exe,HRMon.exe,MultiClient.exe,OActiveII-Client.exe,OEClient.exe,OELogSystem.exe,OEUpdate.exe,OEProtect.exe,ProcessProtect.exe,RunClient.exe,RunClient.exe,ServerOSS.exe,Student.exe,wfilesvr.exe,tvnserver.exe,updatefilesvr.exe,ScreenRender.exe) do taskkill /f /IM %%p\ngoto awa\n"
+    cmdtext = "@ECHO OFF\ntitle OsEasyToolBoxKiller - SP\necho StartKilling....\n:awa\nfor %%p in (Ctsc_Multi.exe,DeviceControl_x64.exe,HRMon.exe,MultiClient.exe,OActiveII-Client.exe,OEClient.exe,OELogSystem.exe,OEUpdate.exe,OEProtect.exe,ProcessProtect.exe,RunClient.exe,RunClient.exe,ServerOSS.exe,Student.exe,wfilesvr.exe,tvnserver.exe,updatefilesvr.exe,ScreenRender.exe) do taskkill>nul 2>nul /f /IM %%p\ngoto awa\n"
     fm.write(cmdtext)
     fm.close()
 
@@ -964,7 +1047,8 @@ def selfunc_g3(need_shutdown:bool):
     runbat("d.bat")
     
 def selfunc_g4(e):
-    usecmd_runcmd('"C:\Program Files (x86)\Os-Easy\os-easy multicast teaching system\Student.exe"')
+    global oseasypath
+    usecmd_runcmd(f'"{oseasypath}Student.exe"')
 
 def selfunc_g5(e):
     restoneKeyDll()
